@@ -8,8 +8,10 @@
   font-weight: 600;
 }
 
-.Home .lander h2 {
+.Home .lander h3 {
   font-family: "Open Sans", sans-serif;
-  font-weight: 200;
-  color: #999;
+  width: 1000px;
+  text-align:left;
+  margin: auto;
+  font-weight: 100;
 }
