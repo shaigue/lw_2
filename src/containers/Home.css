@@ -8,10 +8,22 @@
   font-weight: 600;
 }
 
+.Home .blackjack_guide {
+  margin: auto;
+  text-align: center;
+}
+
+.Home .blackjack_guide h3{
+  font-family: "Open Sans", sans-serif;
+  font-weight: 600;
+}
+
+
 .Home .lander h3 {
   font-family: "Open Sans", sans-serif;
   width: 1000px;
   text-align:left;
   margin: auto;
   font-weight: 100;
+
 }

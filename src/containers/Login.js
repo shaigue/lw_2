@@ -40,7 +40,7 @@ export default class Login extends Component {
             />
           </FormGroup>
           <FormGroup controlId="password" bsSize="large">
-            <ControlLabel>Password</ControlLabel>
+            <ControlLabel>ID</ControlLabel>
             <FormControl
               value={this.state.password}
               onChange={this.handleChange}
