@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import "./Login.css";
 
@@ -47,14 +48,16 @@ export default class Login extends Component {
               type="password"
             />
           </FormGroup>
-          <Button
-            block
-            bsSize="large"
-            disabled={!this.validateForm()}
-            type="submit"
-          >
-            Login
-          </Button>
+          <Link to="/Video_page">
+            <Button
+              block
+              bsSize="large"
+              disabled={!this.validateForm()}
+              type="submit"
+            >
+              Login
+            </Button>
+          </Link>
         </form>
       </div>
     );

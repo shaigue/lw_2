@@ -3,7 +3,36 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from "react-router-dom";
 import './index.css';
 import App from './App';
+import Videos from './containers/Videos'
 import * as serviceWorker from './serviceWorker';
+
+const videoJsOptions = {
+    controls: true,
+    width: 320,
+    height: 240,
+    fluid: false,
+    plugins: {
+        /*
+        // wavesurfer section is only needed when recording audio-only
+        wavesurfer: {
+            src: 'live',
+            waveColor: '#36393b',
+            progressColor: 'black',
+            debug: true,
+            cursorWidth: 1,
+            msDisplayMax: 20,
+            hideScrollbar: true
+        },
+        */
+        record: {
+            audio: true,
+            video: true,
+            maxLength: 10,
+            debug: true
+        }
+    }
+};
+
 
 ReactDOM.render(
   <Router>
