@@ -48,7 +48,7 @@ export default class Login extends Component {
               type="password"
             />
           </FormGroup>
-          <Link to="/Video_page">
+          <Link to="/Videos">
             <Button
               block
               bsSize="large"
