@@ -1,50 +1,80 @@
-import React, { Component } from "react";
-import Webcam from "react-webcam";
-import ReactWebCamCapture from 'react-webcam-capture';
+/* eslint-disable */
+import React, { Component } from 'react';
+
+
+import 'video.js/dist/video-js.css';
+import videojs from 'video.js';
+
+import 'webrtc-adapter';
+import RecordRTC from 'recordrtc';
+
+/*
+// the following imports are only needed when you're recording
+// audio-only using the videojs-wavesurfer plugin
+import WaveSurfer from 'wavesurfer.js';
+import MicrophonePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.microphone.js';
+WaveSurfer.microphone = MicrophonePlugin;
+
+// register videojs-wavesurfer plugin
+import 'videojs-wavesurfer/dist/css/videojs.wavesurfer.css';
+import Wavesurfer from 'videojs-wavesurfer/dist/videojs.wavesurfer.js';
+*/
+
+// register videojs-record plugin with this import
+import 'videojs-record/dist/css/videojs.record.css';
+import Record from 'videojs-record/dist/videojs.record.js';
+
+
 
 export default class Videos extends Component {
-  constructor(props) {
-        super(props);
-        this.videoTag = React.createRef()
-    }
+  componentDidMount() {
+      // instantiate Video.js
+      this.player = videojs(this.videoNode, this.props, () => {
+          // print version information at startup
+          var version_info = 'Using video.js ' + videojs.VERSION +
+              ' with videojs-record ' + videojs.getPluginVersion('record') +
+              ' and recordrtc ' + RecordRTC.version;
+          videojs.log(version_info);
+      });
 
-    componentDidMount() {
-        // getting access to webcam
-       navigator.mediaDevices
-            .getUserMedia({video: true, audio: true})
-            .then(stream => this.videoTag.current.srcObject = stream)
-            .catch(console.log);
-    }
+      // device is ready
+      this.player.on('deviceReady', () => {
+          console.log('device is ready!');
+      });
 
-    render() {
-        return (
-          <ReactWebCamCapture
-          constraints={{ audio: true, video: true }}
-          timeSlice={10}
-          onGranted={this.handleGranted}
-          onDenied={this.handleDenied}
-          onStart={this.handleStart}
-          onStop={this.handleStop}
-          onPause={this.handlePause}
-          onResume={this.handleResume}
-          onError={this.handleError}
-          render={({ start, stop, pause, resume }) =>
-          <div>
+      // user clicked the record button and started recording
+      this.player.on('startRecord', () => {
+          console.log('started recording!');
+      });
 
-            <button onClick={start}>Start</button>
-            <button onClick={stop}>Stop</button>
-            <button onClick={pause}>Pause</button>
-            <button onClick={resume}>Resume</button>
+      // user completed recording and stream is available
+      this.player.on('finishRecord', () => {
+          // recordedData is a blob object containing the recorded data that
+          // can be downloaded by the user, stored on server etc.
+          console.log('finished recording: ', this.player.recordedData);
+      });
 
-            <p>Streaming test</p>
-          <video id={this.props.id}
-                      ref={this.videoTag}
-                      width={this.props.width}
-                      height={this.props.height}
-                      autoPlay
-                      title={this.props.title}></video>
-            </div>
-          }/>
+      // error handling
+      this.player.on('error', (element, error) => {
+          console.warn(error);
+      });
+
+      this.player.on('deviceError', () => {
+          console.error('device error:', this.player.deviceErrorCode);
+      });
+  }
+
+  // destroy player on unmount
+  componentWillUnmount() {
+      if (this.player) {
+          this.player.dispose();
+      }
+  }
+  render() {
+      return (
+      <div data-vjs-player>
+          <video id="myVideo" ref={node => this.videoNode = node} className="video-js vjs-default-skin" playsinline></video>
+      </div>
       );
-    }
+  }
 }
