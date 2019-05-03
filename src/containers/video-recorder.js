@@ -1,5 +1,6 @@
 /* eslint-disable */
 import React, { Component } from 'react';
+import S3FileUpload from 'react-s3';
 
 
 import 'video.js/dist/video-js.css';
@@ -24,9 +25,15 @@ import Wavesurfer from 'videojs-wavesurfer/dist/videojs.wavesurfer.js';
 import 'videojs-record/dist/css/videojs.record.css';
 import Record from 'videojs-record/dist/videojs.record.js';
 
-
+const config = {
+  bucketName: 'blackjackvideo',
+  region: 'us-east-1',
+  accessKeyId: '----',
+  secretAccessKey: '----',
+}
 
 export default class Videos extends Component {
+
   componentDidMount() {
       // instantiate Video.js
       this.player = videojs(this.videoNode, this.props, () => {
