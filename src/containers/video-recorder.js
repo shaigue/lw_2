@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import S3FileUpload from 'react-s3';
 import {ButtonToolbar, Button } from "react-bootstrap";
 
+
 import 'video.js/dist/video-js.css';
 import videojs from 'video.js';
 
@@ -25,13 +26,14 @@ import Wavesurfer from 'videojs-wavesurfer/dist/videojs.wavesurfer.js';
 import 'videojs-record/dist/css/videojs.record.css';
 import Record from 'videojs-record/dist/videojs.record.js';
 
-const config = {
-  bucketName: 'blackjackvideo',
-  region: 'us-east-1',
-  accessKeyId: '----',
-  secretAccessKey: '----',
-}
 
+
+const config = {
+    bucketName: 'blackjackvideo',
+    region: 'us-east-1',
+    accessKeyId: '',
+    secretAccessKey: ''
+}
 
 
 const videoJsOptions = {
@@ -66,6 +68,7 @@ const videoJsOptions = {
 }
 
 
+
 export default class Videos extends Component {
 
   constructor(props) {
@@ -73,6 +76,7 @@ export default class Videos extends Component {
       this.cameraTurnon = this.cameraTurnon.bind(this);
       this.startRecord = this.startRecord.bind(this);
       this.stopRecord = this.stopRecord.bind(this);
+      this.finish_exp = this.finish_exp.bind(this);
     }
 
     cameraTurnon() {
@@ -84,9 +88,19 @@ export default class Videos extends Component {
     }
 
     stopRecord() {
-      this.player.record().stop();
-      this.player.record().stopStream();
+      this.player.record().stopDevice();
     }
+
+    finish_exp(){
+      // upload recorded data
+
+      // start upload
+      S3FileUpload.uploadFile(this.player.recordedData, config)
+      .then(data => console.log(data))
+      .catch(err => console.error(err))
+    }
+
+
 
     componentDidMount() {
         // instantiate Video.js
@@ -112,7 +126,7 @@ export default class Videos extends Component {
         this.player.on('finishRecord', () => {
             // recordedData is a blob object containing the recorded data that
             // can be downloaded by the user, stored on server etc.
-            console.log('finished recording:', player.recordedData);
+            console.log('finished recording:', this.player.recordedData);
         });
 
         // error handling
@@ -139,23 +153,28 @@ export default class Videos extends Component {
       return (
       <div>
         <div data-vjs-player>
-          <video id="myVideo" ref={node => this.videoNode = node} className="video-js vjs-default-skin" playsinline></video>
+          <video id="myVideo" ref={node => this.videoNode = node} className="video-js vjs-default-skin" playsInline></video>
         </div>
 
         <div>
           <ButtonToolbar>
-            <a onClick={this.cameraTurnon} class="btn btn-primary btn-lg">
+            <a onClick={this.cameraTurnon} className="btn btn-primary btn-lg">
               Turn on the Camera/Mic.
             </a>
           </ButtonToolbar>
           <ButtonToolbar>
-            <a onClick={this.startRecord} class="btn btn-primary btn-lg">
+            <a onClick={this.startRecord} className="btn btn-primary btn-lg">
               Start Recording.
             </a>
           </ButtonToolbar>
           <ButtonToolbar>
-            <a onClick={this.stopRecord} class="btn btn-primary btn-lg">
+            <a onClick={this.stopRecord} className="btn btn-primary btn-lg">
               Stop Recording.
+            </a>
+          </ButtonToolbar>
+          <ButtonToolbar>
+            <a onClick={this.finish_exp} className="btn btn-primary btn-lg">
+              Finish the Experiment.
             </a>
           </ButtonToolbar>
 
