@@ -5,11 +5,12 @@ import Home from "./containers/Home";
 import NotFound from "./containers/NotFound";
 import Login from "./containers/Login";
 import Videos from "./containers/video-recorder";
+import Welcome from "./containers/Welcome";
 
 
 export default () =>
   <Switch>
-    <Route path="/" exact component={Home} />
+    <Route path="/" exact component={Welcome} />
 
     <Route
       path="/Videos"
