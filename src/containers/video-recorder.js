@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { Component } from 'react';
 import S3FileUpload from 'react-s3';
-import {ButtonToolbar, Button } from "react-bootstrap";
+import {ButtonToolbar, Button, Jumbotron } from "react-bootstrap";
 
 
 import 'video.js/dist/video-js.css';
@@ -26,8 +26,6 @@ import Wavesurfer from 'videojs-wavesurfer/dist/videojs.wavesurfer.js';
 import 'videojs-record/dist/css/videojs.record.css';
 import Record from 'videojs-record/dist/videojs.record.js';
 
-
-
 const config = {
     bucketName: 'blackjackvideo',
     region: 'us-east-1',
@@ -37,7 +35,7 @@ const config = {
 
 
 const videoJsOptions = {
-    controls: false,
+    controls: true,
     width: 320,
     height: 240,
     fluid: true,
@@ -77,18 +75,30 @@ export default class Videos extends Component {
       this.startRecord = this.startRecord.bind(this);
       this.stopRecord = this.stopRecord.bind(this);
       this.finish_exp = this.finish_exp.bind(this);
+      this.state = {
+        stage: 1
+      };
     }
 
     cameraTurnon() {
-      this.player.record().getDevice();
+      if (this.state.stage==1){
+        this.player.record().getDevice();
+        this.setState({stage:2});
+      }
     }
 
     startRecord() {
-      this.player.record().start();
+      if (this.state.stage==2){
+        this.player.record().start();
+        this.setState({stage:3});
+      }
     }
 
     stopRecord() {
-      this.player.record().stopDevice();
+      if (this.state.stage==3){
+        this.player.record().stop();
+        this.setState({stage:4});
+      }
     }
 
     finish_exp(){
@@ -157,27 +167,62 @@ export default class Videos extends Component {
         </div>
 
         <div>
-          <ButtonToolbar>
-            <a onClick={this.cameraTurnon} className="btn btn-primary btn-lg">
-              Turn on the Camera/Mic.
-            </a>
-          </ButtonToolbar>
-          <ButtonToolbar>
-            <a onClick={this.startRecord} className="btn btn-primary btn-lg">
-              Start Recording.
-            </a>
-          </ButtonToolbar>
-          <ButtonToolbar>
-            <a onClick={this.stopRecord} className="btn btn-primary btn-lg">
-              Stop Recording.
-            </a>
-          </ButtonToolbar>
-          <ButtonToolbar>
-            <a onClick={this.finish_exp} className="btn btn-primary btn-lg">
-              Finish the Experiment.
-            </a>
-          </ButtonToolbar>
+            <Jumbotron>
+              <h1>
+                1) Enabling Mic/Camera
+              </h1>
+              <p>
+                Please click the button below to enable your Camera and Mic. Please allow this website to access your camera and mic by clicking "Allow" if you were prompted to do so.
+              </p>
+              <p>
+                If everything is working properly, you should be able to see yourself on the screen above.
+              </p>
+              <ButtonToolbar>
+                <a onClick={this.cameraTurnon} disabled={this.state.stage!=1} className="btn btn-primary btn-lg">
+                  Enabling your camera/mic.
+                </a>
+              </ButtonToolbar>
+            </Jumbotron>
 
+            <Jumbotron>
+              <h1>
+                2) Start Recording
+              </h1>
+              <p>
+                Before we get started with the study, please put your Alexa machine beside your camera.
+              </p>
+              <p>
+                You will be asked to play Blackjack with Alexa for the next 10 minutes. To start the study, press the button below to start recording and say "Alexa open blackjack Prototype."
+              </p>
+              <ButtonToolbar>
+                <a onClick={this.startRecord} disabled={this.state.stage!=2} className="btn btn-primary btn-lg">
+                  Start Recording.
+                </a>
+              </ButtonToolbar>
+            </Jumbotron>
+
+            <Jumbotron>
+              <h1>
+                3) Stop Recording
+              </h1>
+
+              <ButtonToolbar>
+                <a onClick={this.stopRecord} disabled={this.state.stage!=3} className="btn btn-primary btn-lg">
+                  Stop Recording.
+                </a>
+              </ButtonToolbar>
+            </Jumbotron>
+
+          <Jumbotron>
+            <h1>
+              4) Finish the Experiment
+            </h1>
+            <ButtonToolbar>
+              <a onClick={this.finish_exp} disabled={this.state.stage!=4} className="btn btn-primary btn-lg">
+                Finish the Experiment.
+              </a>
+            </ButtonToolbar>
+          </Jumbotron>
 
         </div>
 
