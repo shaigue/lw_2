@@ -3,70 +3,58 @@ import React, { Component } from 'react';
 import S3FileUpload from 'react-s3';
 import {ButtonToolbar, Button, Jumbotron, Collapse } from "reactstrap";
 
-
 import 'video.js/dist/video-js.css';
 import videojs from 'video.js';
 
 import 'webrtc-adapter';
 import RecordRTC from 'recordrtc';
 
-/*
-// the following imports are only needed when you're recording
-// audio-only using the videojs-wavesurfer plugin
-import WaveSurfer from 'wavesurfer.js';
-import MicrophonePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.microphone.js';
-WaveSurfer.microphone = MicrophonePlugin;
-
-// register videojs-wavesurfer plugin
-import 'videojs-wavesurfer/dist/css/videojs.wavesurfer.css';
-import Wavesurfer from 'videojs-wavesurfer/dist/videojs.wavesurfer.js';
-*/
-
-// register videojs-record plugin with this import
 import 'videojs-record/dist/css/videojs.record.css';
 import Record from 'videojs-record/dist/videojs.record.js';
-
-const config = {
-    bucketName: 'blackjackvideo',
-    region: 'us-east-1',
-    accessKeyId: '',
-    secretAccessKey: ''
-}
-
+import {withRouter} from 'react-router-dom';
 
 const videoJsOptions = {
-    controls: false,
+    controls: true,
     width: 320,
     height: 240,
     fluid: true,
     loop:true,
-    autoMuteDevice: false,
     plugins: {
         record: {
             audio: true,
             video: true,
-            maxLength: 600,
+            maxLength: 3,
             debug: true
         }
       },
     controlBar: {
       fullscreenToggle: false,
-      deviceButton: false
+      deviceButton: false,
+      hotKeys:true
     }
 }
 
 
 
-export default class Videos extends Component {
+export default class Videos_Demo extends Component {
 
   constructor(props) {
       super(props);
+      this.cameraTurnon = this.cameraTurnon.bind(this);
       this.startRecord = this.startRecord.bind(this);
+      this.toggle1 = this.toggle1.bind(this);
+      this.toggle2 = this.toggle2.bind(this);
+      this.toggle3 = this.toggle3.bind(this);
+      this.toggle4 = this.toggle4.bind(this);
+      this.slide_2_3 = this.slide_2_3.bind(this);
+      this.slide_4_5 = this.slide_4_5.bind(this);
 
       this.state = {
         collapse1: true,
         collapse2: false,
         collapse3: false,
+        collapse4: false,
+        collapse5: false,
       };
     }
 
@@ -81,13 +69,36 @@ export default class Videos extends Component {
     toggle3(){
       this.setState(state => ({ collapse3: !state.collapse3}));
     }
+    toggle4(){
+      this.setState(state => ({ collapse4: !state.collapse4}));
+    }
+
+    slide_2_3() {
+      this.toggle2();
+      this.toggle3();
+    }
+
+    cameraTurnon() {
+        this.player.record().getDevice();
+        this.toggle1();
+        this.toggle2();
+    }
 
     startRecord() {
         this.player.record().start();
-        this.toggle1();
-        this.toggle2();
+        this.toggle3();
+        this.toggle4();
 
     }
+
+    slide_4_5() {
+        this.setState(
+          state => ({
+            collapse4: !state.collapse4,
+            collapse5: !state.collapse5
+        }));
+    }
+
 
     componentDidMount() {
         // instantiate Video.js
@@ -98,8 +109,6 @@ export default class Videos extends Component {
                 ' and recordrtc ' + RecordRTC.version;
             videojs.log(version_info);
         });
-
-        this.player.record().getDevice();
 
         // device is ready
         this.player.on('deviceReady', () => {
@@ -116,9 +125,8 @@ export default class Videos extends Component {
             // recordedData is a blob object containing the recorded data that
             // can be downloaded by the user, stored on server etc.
             console.log('finished recording:', this.player.recordedData);
-            S3FileUpload.uploadFile(this.player.recordedData, config)
-            .then(data => console.log(data))
-            .catch(err => console.error(err));
+            this.player.record().saveAs({'video': 'my-video-file-name.webm'});
+            this.slide_4_5();
         });
 
         // error handling
@@ -129,16 +137,6 @@ export default class Videos extends Component {
         this.player.on('deviceError', () => {
             console.error('device error:', this.player.deviceErrorCode);
         });
-
-    }
-    componentWillReceiveProps() {
-      this.player = videojs(this.videoNode, this.videoJsOptions1, () => {
-          // print version information at startup
-          var version_info = 'Using video.js ' + videojs.VERSION +
-              ' with videojs-record ' + videojs.getPluginVersion('record') +
-              ' and recordrtc ' + RecordRTC.version;
-          videojs.log(version_info);
-      });
 
     }
 
@@ -156,9 +154,21 @@ export default class Videos extends Component {
             <Collapse isOpen={this.state.collapse1}>
               <Jumbotron>
                 <ButtonToolbar>
-                  <a onClick={this.startRecord} className="btn btn-primary btn-lg">
+                  <a onClick={this.cameraTurnon} className= "btn btn-primary btn-lg btn-block">
                     <h1>
-                    Start the Experiment.
+                      Enable camera/mic.
+                    </h1>
+                  </a>
+                </ButtonToolbar>
+              </Jumbotron>
+            </Collapse>
+
+            <Collapse isOpen={this.state.collapse2}>
+              <Jumbotron>
+                <ButtonToolbar>
+                  <a onClick={this.slide_2_3} className="btn btn-primary btn-lg btn-block">
+                    <h1>
+                      Put your Alexa beside your Camera
                     </h1>
                   </a>
                 </ButtonToolbar>
@@ -167,13 +177,11 @@ export default class Videos extends Component {
 
             <Collapse isOpen={this.state.collapse3}>
               <Jumbotron>
-                <h1>
-                  3) Stop Recording
-                </h1>
-
                 <ButtonToolbar>
-                  <a onClick={this.stopRecord}  className="btn btn-primary btn-lg">
-                    Stop Recording.
+                  <a onClick={this.startRecord} className="btn btn-primary btn-lg btn-block">
+                    <h1>
+                      Start Test Recording
+                    </h1>
                   </a>
                 </ButtonToolbar>
               </Jumbotron>
@@ -182,15 +190,28 @@ export default class Videos extends Component {
             <Collapse isOpen={this.state.collapse4}>
               <Jumbotron>
                 <h1>
-                  4) Finish the Experiment
+                  Say: "Alexa What's the weather?"
+                </h1>
+              </Jumbotron>
+            </Collapse>
+
+            <Collapse isOpen={this.state.collapse5}>
+              <Jumbotron>
+                <h1>
+                  You should have a video file downloaded to your computer. Check the video to make sure everything is working.
                 </h1>
                 <ButtonToolbar>
-                  <a onClick={this.finish_exp} className="btn btn-primary btn-lg">
-                    Finish the Experiment.
+                  <a href="/Videos" className="btn btn-primary btn-lg btn-block">
+                    <h1>
+                      Next Page
+                    </h1>
                   </a>
                 </ButtonToolbar>
               </Jumbotron>
             </Collapse>
+
+
+
         </div>
         <div data-vjs-player>
           <video id="myVideo" ref={node => this.videoNode = node} className="video-js vjs-default-skin" playsInline></video>

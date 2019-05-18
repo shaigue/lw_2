@@ -5,12 +5,13 @@ import Home from "./containers/Home";
 import NotFound from "./containers/NotFound";
 import Login from "./containers/Login";
 import Videos from "./containers/video-recorder";
+import Videos_demo from "./containers/video-recorder-demo";
 
 
 export default () =>
   <Switch>
-    <Route path="/" exact component={Home} />
-
+    <Route path="/" exact component={Login} />
+    <Route path="/Videos_demo" exact component={Videos_demo} />
     <Route
       path="/Videos"
       render = {props =>
@@ -20,6 +21,5 @@ export default () =>
         </div>
       }/>
 
-    <Route path="/login" exact component={Login} />
     <Route component={NotFound} />
   </Switch>;
