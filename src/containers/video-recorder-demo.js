@@ -1,7 +1,9 @@
 /* eslint-disable */
 import React, { Component } from 'react';
 import S3FileUpload from 'react-s3';
-import {ButtonToolbar, Button, Jumbotron, Collapse } from "reactstrap";
+import {ButtonToolbar, Card, Button, CardTitle, CardText, Jumbotron, Collapse } from "reactstrap";
+
+import './video-recorder-demo.css'
 
 import 'video.js/dist/video-js.css';
 import videojs from 'video.js';
@@ -14,11 +16,10 @@ import Record from 'videojs-record/dist/videojs.record.js';
 import {withRouter} from 'react-router-dom';
 
 const videoJsOptions = {
-    controls: true,
-    width: 320,
-    height: 240,
-    fluid: true,
-    loop:true,
+    controls: false,
+    width: 400,
+    height: 300,
+    fluid: false,
     plugins: {
         record: {
             audio: true,
@@ -149,77 +150,73 @@ export default class Videos_Demo extends Component {
 
   render() {
       return (
-      <div>
-        <div>
-            <Collapse isOpen={this.state.collapse1}>
-              <Jumbotron>
-                <ButtonToolbar>
-                  <a onClick={this.cameraTurnon} className= "btn btn-primary btn-lg btn-block">
-                    <h1>
-                      Enable camera/mic.
-                    </h1>
-                  </a>
-                </ButtonToolbar>
-              </Jumbotron>
-            </Collapse>
+        <div className='thebig'>
+            <div className='instructions'>
+                <Collapse isOpen={this.state.collapse1} appear={false}>
+                  <Card id="ins" body outline color="secondary">
+                    <ButtonToolbar id="bt">
+                      <Button color='primary' onClick={this.cameraTurnon}>
+                        <h2>
+                          Enable camera/mic.
+                        </h2>
+                      </Button>
+                    </ButtonToolbar>
+                  </Card>
+                </Collapse>
 
-            <Collapse isOpen={this.state.collapse2}>
-              <Jumbotron>
-                <ButtonToolbar>
-                  <a onClick={this.slide_2_3} className="btn btn-primary btn-lg btn-block">
-                    <h1>
-                      Put your Alexa beside your Camera
-                    </h1>
-                  </a>
-                </ButtonToolbar>
-              </Jumbotron>
-            </Collapse>
+                <Collapse isOpen={this.state.collapse2} appear={false}>
+                  <Card id="ins" body outline color="secondary">
+                    <ButtonToolbar id="bt">
+                      <Button color='primary' onClick={this.slide_2_3}>
+                        <h2>
+                          Put your Alexa beside your Camera
+                        </h2>
+                      </Button>
+                    </ButtonToolbar>
+                  </Card>
+                </Collapse>
 
-            <Collapse isOpen={this.state.collapse3}>
-              <Jumbotron>
-                <ButtonToolbar>
-                  <a onClick={this.startRecord} className="btn btn-primary btn-lg btn-block">
-                    <h1>
-                      Start Test Recording
-                    </h1>
-                  </a>
-                </ButtonToolbar>
-              </Jumbotron>
-            </Collapse>
+                <Collapse isOpen={this.state.collapse3} appear={false}>
+                  <Card id="ins" body outline color="secondary">
+                    <ButtonToolbar id="bt">
+                      <Button color='primary' onClick={this.startRecord}>
+                        <h2>
+                          Start Test Recording
+                        </h2>
+                      </Button>
+                    </ButtonToolbar>
+                  </Card>
+                </Collapse>
 
-            <Collapse isOpen={this.state.collapse4}>
-              <Jumbotron>
-                <h1>
-                  Say: "Alexa What's the weather?"
-                </h1>
-              </Jumbotron>
-            </Collapse>
+                <Collapse isOpen={this.state.collapse4} appear={false}>
+                  <Card id="ins" body outline color="secondary">
+                    <h2>
+                      Say: "Alexa What's the weather?" < br/>
+                      < br/>
+                      [you will be recorded for 20 seconds]
+                    </h2>
+                  </Card>
+                </Collapse>
 
-            <Collapse isOpen={this.state.collapse5}>
-              <Jumbotron>
-                <h1>
-                  You should have a video file downloaded to your computer. Check the video to make sure everything is working.
-                </h1>
-                <ButtonToolbar>
-                  <a href="/Videos" className="btn btn-primary btn-lg btn-block">
-                    <h1>
-                      Next Page
-                    </h1>
-                  </a>
-                </ButtonToolbar>
-              </Jumbotron>
-            </Collapse>
-
-
-
+                <Collapse isOpen={this.state.collapse5} appear={false}>
+                  <Card id="ins" body outline color="secondary">
+                    <h2>
+                      You should have a video file downloaded to your computer. Check the video to make sure everything is working.
+                    </h2>
+                    <ButtonToolbar id="bt">
+                      <a href="/Videos" className="btn btn-primary">
+                        <h2>
+                          Next Page
+                        </h2>
+                      </a>
+                    </ButtonToolbar>
+                  </Card>
+                </Collapse>
+          </div>
+          <div className ="video_player">
+              <video id="myVideo" ref={node => this.videoNode = node} className="video-js vjs-default-skin" playsInline></video>
+          </div>
         </div>
-        <div data-vjs-player>
-          <video id="myVideo" ref={node => this.videoNode = node} className="video-js vjs-default-skin" playsInline></video>
-        </div>
-
-      </div>
-
-
       );
   }
 }

@@ -1,8 +1,8 @@
 /* eslint-disable */
 import React, { Component } from 'react';
 import S3FileUpload from 'react-s3';
-import {ButtonToolbar, Button, Jumbotron, Collapse } from "reactstrap";
-
+import {ButtonToolbar, Button, Collapse, Card } from "reactstrap";
+import './video-recorder.css'
 
 import 'video.js/dist/video-js.css';
 import videojs from 'video.js';
@@ -29,23 +29,23 @@ import Record from 'videojs-record/dist/videojs.record.js';
 const config = {
     bucketName: 'blackjackvideo',
     region: 'us-east-1',
-    accessKeyId: '',
-    secretAccessKey: ''
+    accessKeyId:'',
+    secretAccessKey:'',
 }
+
+
 
 
 const videoJsOptions = {
     controls: false,
-    width: 320,
-    height: 240,
-    fluid: true,
-    loop:true,
-    autoMuteDevice: false,
+    width: 400,
+    height: 300,
+    fluid: false,
     plugins: {
         record: {
             audio: true,
             video: true,
-            maxLength: 600,
+            maxLength: 3,
             debug: true
         }
       },
@@ -62,6 +62,9 @@ export default class Videos extends Component {
   constructor(props) {
       super(props);
       this.startRecord = this.startRecord.bind(this);
+      this.toggle1 = this.toggle1.bind(this);
+      this.toggle2 = this.toggle2.bind(this);
+      this.toggle3 = this.toggle3.bind(this);
 
       this.state = {
         collapse1: true,
@@ -81,6 +84,7 @@ export default class Videos extends Component {
     toggle3(){
       this.setState(state => ({ collapse3: !state.collapse3}));
     }
+
 
     startRecord() {
         this.player.record().start();
@@ -115,11 +119,16 @@ export default class Videos extends Component {
         this.player.on('finishRecord', () => {
             // recordedData is a blob object containing the recorded data that
             // can be downloaded by the user, stored on server etc.
+            this.toggle2();
+            this.toggle3();
             console.log('finished recording:', this.player.recordedData);
             S3FileUpload.uploadFile(this.player.recordedData, config)
             .then(data => console.log(data))
             .catch(err => console.error(err));
         });
+
+
+
 
         // error handling
         this.player.on('error', (element, error) => {
@@ -131,72 +140,54 @@ export default class Videos extends Component {
         });
 
     }
-    componentWillReceiveProps() {
-      this.player = videojs(this.videoNode, this.videoJsOptions1, () => {
-          // print version information at startup
-          var version_info = 'Using video.js ' + videojs.VERSION +
-              ' with videojs-record ' + videojs.getPluginVersion('record') +
-              ' and recordrtc ' + RecordRTC.version;
-          videojs.log(version_info);
-      });
 
-    }
-
-    // destroy player on unmount
-    componentWillUnmount() {
-        if (this.player) {
-            this.player.dispose();
-        }
-    }
 
   render() {
       return (
-      <div>
-        <div>
-            <Collapse isOpen={this.state.collapse1}>
-              <Jumbotron>
-                <ButtonToolbar>
-                  <a onClick={this.startRecord} className="btn btn-primary btn-lg">
-                    <h1>
-                    Start the Experiment.
-                    </h1>
-                  </a>
-                </ButtonToolbar>
-              </Jumbotron>
-            </Collapse>
+        <div className='thebig'>
+            <div className='instructions'>
+                <Collapse isOpen={this.state.collapse1} appear={false}>
+                  <Card id="ins" body outline color="secondary">
+                    <h2>
+                      Ready?
+                    </h2>
+                    <ButtonToolbar id="bt">
+                      <Button color='primary' onClick={this.startRecord}>
+                        <h2>
+                          Start
+                        </h2>
+                      </Button>
+                    </ButtonToolbar>
+                  </Card>
+                </Collapse>
 
-            <Collapse isOpen={this.state.collapse3}>
-              <Jumbotron>
-                <h1>
-                  3) Stop Recording
-                </h1>
+                <Collapse isOpen={this.state.collapse2} appear={false}>
+                  <Card id="ins" body outline color="secondary">
+                    <ButtonToolbar id="bt">
+                      <h2>
+                        Say: Say, “Alexa, open blackjack Prototype” and start playing
+                        < br/>
+                        < br/>
+                        [you will be recorded for 5 minutes and moved to the next page when the time's up]
+                      </h2>
+                    </ButtonToolbar>
+                  </Card>
+                </Collapse>
 
-                <ButtonToolbar>
-                  <a onClick={this.stopRecord}  className="btn btn-primary btn-lg">
-                    Stop Recording.
-                  </a>
-                </ButtonToolbar>
-              </Jumbotron>
-            </Collapse>
-
-            <Collapse isOpen={this.state.collapse4}>
-              <Jumbotron>
-                <h1>
-                  4) Finish the Experiment
-                </h1>
-                <ButtonToolbar>
-                  <a onClick={this.finish_exp} className="btn btn-primary btn-lg">
-                    Finish the Experiment.
-                  </a>
-                </ButtonToolbar>
-              </Jumbotron>
-            </Collapse>
+                <Collapse isOpen={this.state.collapse3} appear={false}>
+                  <Card id="ins" body outline color="secondary">
+                    <ButtonToolbar id="bt">
+                      <h2>
+                        Thank you for participating! Your recording is being uploaded to the server!
+                      </h2>
+                    </ButtonToolbar>
+                  </Card>
+                </Collapse>
+          </div>
+          <div className ="video_player">
+              <video id="myVideo" ref={node => this.videoNode = node} className="video-js vjs-default-skin" playsInline></video>
+          </div>
         </div>
-        <div data-vjs-player>
-          <video id="myVideo" ref={node => this.videoNode = node} className="video-js vjs-default-skin" playsInline></video>
-        </div>
-
-      </div>
 
 
       );
