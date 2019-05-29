@@ -153,7 +153,7 @@ export default class Videos_Demo extends Component {
         <div className='thebig'>
             <div className='instructions'>
                 <Collapse isOpen={this.state.collapse1} appear={false}>
-                  <Card id="ins" body outline color="secondary">
+
                     <ButtonToolbar id="bt">
                       <Button color='primary' onClick={this.cameraTurnon}>
                         <h2>
@@ -161,11 +161,10 @@ export default class Videos_Demo extends Component {
                         </h2>
                       </Button>
                     </ButtonToolbar>
-                  </Card>
                 </Collapse>
 
                 <Collapse isOpen={this.state.collapse2} appear={false}>
-                  <Card id="ins" body outline color="secondary">
+
                     <ButtonToolbar id="bt">
                       <Button color='primary' onClick={this.slide_2_3}>
                         <h2>
@@ -173,11 +172,11 @@ export default class Videos_Demo extends Component {
                         </h2>
                       </Button>
                     </ButtonToolbar>
-                  </Card>
+
                 </Collapse>
 
                 <Collapse isOpen={this.state.collapse3} appear={false}>
-                  <Card id="ins" body outline color="secondary">
+
                     <ButtonToolbar id="bt">
                       <Button color='primary' onClick={this.startRecord}>
                         <h2>
@@ -185,21 +184,21 @@ export default class Videos_Demo extends Component {
                         </h2>
                       </Button>
                     </ButtonToolbar>
-                  </Card>
+
                 </Collapse>
 
                 <Collapse isOpen={this.state.collapse4} appear={false}>
-                  <Card id="ins" body outline color="secondary">
+
                     <h2>
                       Say: "Alexa What's the weather?" < br/>
                       < br/>
                       [you will be recorded for 20 seconds]
                     </h2>
-                  </Card>
+
                 </Collapse>
 
                 <Collapse isOpen={this.state.collapse5} appear={false}>
-                  <Card id="ins" body outline color="secondary">
+
                     <h2>
                       You should have a video file downloaded to your computer. Check the video to make sure everything is working.
                     </h2>
@@ -210,7 +209,6 @@ export default class Videos_Demo extends Component {
                         </h2>
                       </a>
                     </ButtonToolbar>
-                  </Card>
                 </Collapse>
           </div>
           <div className ="video_player">

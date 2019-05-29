@@ -147,22 +147,16 @@ export default class Videos extends Component {
         <div className='thebig'>
             <div className='instructions'>
                 <Collapse isOpen={this.state.collapse1} appear={false}>
-                  <Card id="ins" body outline color="secondary">
-                    <h2>
-                      Ready?
-                    </h2>
                     <ButtonToolbar id="bt">
                       <Button color='primary' onClick={this.startRecord}>
                         <h2>
-                          Start
+                          Start Recording
                         </h2>
                       </Button>
                     </ButtonToolbar>
-                  </Card>
                 </Collapse>
 
                 <Collapse isOpen={this.state.collapse2} appear={false}>
-                  <Card id="ins" body outline color="secondary">
                     <ButtonToolbar id="bt">
                       <h2>
                         Say: Say, “Alexa, open blackjack Prototype” and start playing
@@ -171,17 +165,14 @@ export default class Videos extends Component {
                         [you will be recorded for 5 minutes and moved to the next page when the time's up]
                       </h2>
                     </ButtonToolbar>
-                  </Card>
                 </Collapse>
 
                 <Collapse isOpen={this.state.collapse3} appear={false}>
-                  <Card id="ins" body outline color="secondary">
                     <ButtonToolbar id="bt">
                       <h2>
                         Thank you for participating! Your recording is being uploaded to the server!
                       </h2>
                     </ButtonToolbar>
-                  </Card>
                 </Collapse>
           </div>
           <div className ="video_player">
