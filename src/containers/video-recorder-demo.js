@@ -201,11 +201,51 @@ export default class Videos_Demo extends Component {
 
                     <h2>
                       You should have a video file downloaded to your computer. Check the video to make sure everything is working.
+                      < br/>
+                      < br/>
+                      If everything is working.
                     </h2>
+
                     <ButtonToolbar id="bt">
                       <a href="/Videos" className="btn btn-primary">
                         <h2>
                           Next Page
+                        </h2>
+                      </a>
+                    </ButtonToolbar>
+
+
+                    <h2>
+                      < br/>
+                      If it didn't work...
+                    </h2>
+
+                    <ButtonToolbar id="bt">
+                      <a onClick={()=> window.open("https://www.cleverfiles.com/help/mac-camera-not-working.html")} className="btn btn-primary">
+                        <h2>
+                          Help for Mac users
+                        </h2>
+                      </a>
+                    </ButtonToolbar>
+
+
+                    <ButtonToolbar id="bt">
+                      <a onClick={()=> window.open("https://support.microsoft.com/en-us/help/13753/windows-10-camera-does-not-work", "_blank")}  className="btn btn-primary">
+                        <h2>
+                          Help for Window Users
+                        </h2>
+                      </a>
+                    </ButtonToolbar>
+
+                    <h2>
+                      < br/>
+                      After making adjustments...
+                    </h2>
+
+                    <ButtonToolbar id="bt">
+                      <a href="/Videos_demo" className="btn btn-primary">
+                        <h2>
+                          Refresh this page
                         </h2>
                       </a>
                     </ButtonToolbar>

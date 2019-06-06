@@ -29,8 +29,8 @@ import Record from 'videojs-record/dist/videojs.record.js';
 const config = {
     bucketName: 'blackjackvideo',
     region: 'us-east-1',
-    accessKeyId:'',
-    secretAccessKey:'',
+    accessKeyId:'AKIAIB2DJLMAGTRQXA6A',
+    secretAccessKey:'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',
 }
 
 
@@ -159,7 +159,7 @@ export default class Videos extends Component {
                 <Collapse isOpen={this.state.collapse2} appear={false}>
                     <ButtonToolbar id="bt">
                       <h2>
-                        Say: Say, “Alexa, open blackjack Prototype” and start playing
+                        Say: “Alexa, open blackjack Prototype” and start playing
                         < br/>
                         < br/>
                         [you will be recorded for 5 minutes and moved to the next page when the time's up]
