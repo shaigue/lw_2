@@ -29,8 +29,8 @@ import Record from 'videojs-record/dist/videojs.record.js';
 const config = {
     bucketName: 'blackjackvideo',
     region: 'us-east-1',
-    accessKeyId:'AKIAIB2DJLMAGTRQXA6A',
-    secretAccessKey:'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',
+    accessKeyId:'',
+    secretAccessKey:'',
 }
 
 
