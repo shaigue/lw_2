@@ -11,6 +11,7 @@
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-bootstrap": "^0.32.4",
+    "react-countdown-now": "^2.1.1",
     "react-dom": "^16.8.6",
     "react-multimedia-capture": "^1.2.3",
     "react-player": "^1.11.0",

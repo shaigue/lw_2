@@ -1,6 +1,5 @@
 /* eslint-disable */
 import React, { Component } from 'react';
-import S3FileUpload from 'react-s3';
 import {ButtonToolbar, Button, Collapse, Card } from "reactstrap";
 import './video-recorder.css'
 
@@ -9,6 +8,29 @@ import videojs from 'video.js';
 
 import 'webrtc-adapter';
 import RecordRTC from 'recordrtc';
+
+import MyCountdown from './MyCountdown';
+
+const videoJsOptions = {
+    controls: false,
+    width: 400,
+    height: 300,
+    fluid: false,
+    plugins: {
+        record: {
+            audio: true,
+            video: true,
+            maxLength: 600,
+            debug: true
+        }
+      },
+    controlBar: {
+      fullscreenToggle: false,
+      deviceButton: false,
+      hotKeys:true
+    }
+}
+
 
 /*
 // the following imports are only needed when you're recording
@@ -26,37 +48,6 @@ import Wavesurfer from 'videojs-wavesurfer/dist/videojs.wavesurfer.js';
 import 'videojs-record/dist/css/videojs.record.css';
 import Record from 'videojs-record/dist/videojs.record.js';
 
-const config = {
-    bucketName: 'blackjackvideo',
-    region: 'us-east-1',
-    accessKeyId:'',
-    secretAccessKey:'',
-}
-
-
-
-
-const videoJsOptions = {
-    controls: false,
-    width: 400,
-    height: 300,
-    fluid: false,
-    plugins: {
-        record: {
-            audio: true,
-            video: true,
-            maxLength: 3,
-            debug: true
-        }
-      },
-    controlBar: {
-      fullscreenToggle: false,
-      deviceButton: false
-    }
-}
-
-
-
 export default class Videos extends Component {
 
   constructor(props) {
@@ -70,6 +61,7 @@ export default class Videos extends Component {
         collapse1: true,
         collapse2: false,
         collapse3: false,
+        countdownStarted: false,
       };
     }
 
@@ -84,15 +76,18 @@ export default class Videos extends Component {
     toggle3(){
       this.setState(state => ({ collapse3: !state.collapse3}));
     }
-
-
     startRecord() {
         this.player.record().start();
         this.toggle1();
         this.toggle2();
 
     }
-
+    startCountdown = () => {
+      this.setState({countdownStarted: true});
+    }
+    stopRecord = () => {
+      this.player.record().stop();
+    }
     componentDidMount() {
         // instantiate Video.js
         this.player = videojs(this.videoNode, videoJsOptions, () => {
@@ -102,19 +97,16 @@ export default class Videos extends Component {
                 ' and recordrtc ' + RecordRTC.version;
             videojs.log(version_info);
         });
-
         this.player.record().getDevice();
-
         // device is ready
         this.player.on('deviceReady', () => {
             console.log('device is ready!');
         });
-
         // user clicked the record button and started recording
         this.player.on('startRecord', () => {
             console.log('started recording!');
+            this.startCountdown();
         });
-
         // user completed recording and stream is available
         this.player.on('finishRecord', () => {
             // recordedData is a blob object containing the recorded data that
@@ -122,19 +114,12 @@ export default class Videos extends Component {
             this.toggle2();
             this.toggle3();
             console.log('finished recording:', this.player.recordedData);
-            S3FileUpload.uploadFile(this.player.recordedData, config)
-            .then(data => console.log(data))
-            .catch(err => console.error(err));
+            // TODO: add some code to upload to S3 the video and logs
         });
-
-
-
-
         // error handling
         this.player.on('error', (element, error) => {
             console.warn(error);
         });
-
         this.player.on('deviceError', () => {
             console.error('device error:', this.player.deviceErrorCode);
         });
@@ -143,7 +128,14 @@ export default class Videos extends Component {
 
 
   render() {
-      return (
+    const seconds = 180; // 3- minutes
+    const countdown = (
+      <MyCountdown 
+        seconds={seconds}
+        onComplete={this.stopRecord}
+      />
+    );
+    return (
         <div className='thebig'>
             <div className='instructions'>
                 <Collapse isOpen={this.state.collapse1} appear={false}>
@@ -162,7 +154,7 @@ export default class Videos extends Component {
                         Say: “Alexa, open blackjack Prototype” and start playing
                         < br/>
                         < br/>
-                        [you will be recorded for 5 minutes and moved to the next page when the time's up]
+                        {this.state.countdownStarted && countdown}
                       </h2>
                     </ButtonToolbar>
                 </Collapse>

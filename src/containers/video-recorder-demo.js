@@ -1,6 +1,5 @@
 /* eslint-disable */
 import React, { Component } from 'react';
-import S3FileUpload from 'react-s3';
 import {ButtonToolbar, Card, Button, CardTitle, CardText, Jumbotron, Collapse } from "reactstrap";
 
 import './video-recorder-demo.css'
@@ -14,6 +13,9 @@ import RecordRTC from 'recordrtc';
 import 'videojs-record/dist/css/videojs.record.css';
 import Record from 'videojs-record/dist/videojs.record.js';
 import {withRouter} from 'react-router-dom';
+
+// for using countdown:
+import MyCountdown from './MyCountdown';
 
 const videoJsOptions = {
     controls: false,
@@ -35,8 +37,6 @@ const videoJsOptions = {
     }
 }
 
-
-
 export default class Videos_Demo extends Component {
 
   constructor(props) {
@@ -56,42 +56,35 @@ export default class Videos_Demo extends Component {
         collapse3: false,
         collapse4: false,
         collapse5: false,
+        countdownStarted: false,
       };
     }
-
     toggle1(){
       this.setState(state => ({ collapse1: !state.collapse1}));
     }
-
     toggle2(){
       this.setState(state => ({ collapse2: !state.collapse2}));
     }
-
     toggle3(){
       this.setState(state => ({ collapse3: !state.collapse3}));
     }
     toggle4(){
       this.setState(state => ({ collapse4: !state.collapse4}));
     }
-
     slide_2_3() {
       this.toggle2();
       this.toggle3();
     }
-
     cameraTurnon() {
         this.player.record().getDevice();
         this.toggle1();
         this.toggle2();
     }
-
     startRecord() {
         this.player.record().start();
         this.toggle3();
         this.toggle4();
-
     }
-
     slide_4_5() {
         this.setState(
           state => ({
@@ -99,8 +92,11 @@ export default class Videos_Demo extends Component {
             collapse5: !state.collapse5
         }));
     }
-
-
+    // this is a function to stop recording
+    stopRecord = () => {
+      this.player.record().stop();
+      // impement pass to the next step -not now, in event 'finishRecord'
+    }
     componentDidMount() {
         // instantiate Video.js
         this.player = videojs(this.videoNode, videoJsOptions, () => {
@@ -110,17 +106,15 @@ export default class Videos_Demo extends Component {
                 ' and recordrtc ' + RecordRTC.version;
             videojs.log(version_info);
         });
-
         // device is ready
         this.player.on('deviceReady', () => {
             console.log('device is ready!');
         });
-
         // user clicked the record button and started recording
         this.player.on('startRecord', () => {
-            console.log('started recording!');
+          this.setState({countdownStarted: true}); // tell the timer to start running
+          console.log('started recording!');
         });
-
         // user completed recording and stream is available
         this.player.on('finishRecord', () => {
             // recordedData is a blob object containing the recorded data that
@@ -129,12 +123,10 @@ export default class Videos_Demo extends Component {
             this.player.record().saveAs({'video': 'my-video-file-name.webm'});
             this.slide_4_5();
         });
-
         // error handling
         this.player.on('error', (element, error) => {
             console.warn(error);
         });
-
         this.player.on('deviceError', () => {
             console.error('device error:', this.player.deviceErrorCode);
         });
@@ -151,6 +143,16 @@ export default class Videos_Demo extends Component {
   render() {
     const num_parts = 5;
     const parts = Array(5);
+    // the part where the recording starts.
+    // renders a timer to the end of the recording, and a button to start the test recording
+    const seconds = 5;
+    const countdown1 = (
+      <MyCountdown 
+        key='countdown1'
+        seconds={seconds} 
+        onComplete={this.stopRecord}
+      />
+    );
     parts[0] = (
       <Collapse isOpen={this.state.collapse1} appear={false}>
             <ButtonToolbar id="bt">
@@ -184,12 +186,25 @@ export default class Videos_Demo extends Component {
         </ButtonToolbar>
       </Collapse>
     );
+    /* - temporary commented out to integrate countdown
+    parts[2] = (
+      <Collapse isOpen={this.state.collapse3} appear={false}>
+        <ButtonToolbar id="bt">
+          <Button color='primary' onClick={this.startRecord}>
+            <h2>
+              Start Test Recording
+            </h2>
+          </Button>
+        </ButtonToolbar>
+      </Collapse>
+    );
+    */
     parts[3] = (
       <Collapse isOpen={this.state.collapse4} appear={false}>
         <h2>
-          Say: "Alexa What's the weather?" < br/>
+          Say: "Alexa Tell me a joke." < br/>
           < br/>
-          [you will be recorded for 20 seconds]
+          {this.state.countdownStarted && countdown1}
         </h2>
       </Collapse>
     );
@@ -212,24 +227,13 @@ export default class Videos_Demo extends Component {
             < br/>
             If it didn't work...
           </h2>
-          <ButtonToolbar id="bt">
-            <a onClick={()=> window.open("https://www.cleverfiles.com/help/mac-camera-not-working.html")} className="btn btn-primary">
-              <h2>
-                Help for Mac users
-              </h2>
-            </a>
-          </ButtonToolbar>
-          <ButtonToolbar id="bt">
-            <a onClick={()=> window.open("https://support.microsoft.com/en-us/help/13753/windows-10-camera-does-not-work", "_blank")}  className="btn btn-primary">
-              <h2>
-                Help for Window Users
-              </h2>
-            </a>
-          </ButtonToolbar>
-          <h2>
-            < br/>
-            After making adjustments...
-          </h2>
+          <a src="https://www.cleverfiles.com/help/mac-camera-not-working.html" id='link'>
+              Help for Mac users<br />
+          </a>
+          <a src="https://support.microsoft.com/en-us/help/13753/windows-10-camera-does-not-work" id='link'>
+            Help for Window Users<br />
+          </a>
+          <h2>< br/>After making adjustments...</h2>
           <ButtonToolbar id="bt">
             <a href="/Videos_demo" className="btn btn-primary">
               <h2>Refresh this page</h2>

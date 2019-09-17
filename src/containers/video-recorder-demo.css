@@ -39,3 +39,9 @@
   margin: auto;
 
 }
+
+#link {
+  color: blue;
+  font-style: unset;
+  font-size: 20px;
+}
