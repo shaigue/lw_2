@@ -24,7 +24,7 @@ const videoJsOptions = {
         record: {
             audio: true,
             video: true,
-            maxLength: 3,
+            maxLength: 600,
             debug: true
         }
       },
@@ -149,107 +149,98 @@ export default class Videos_Demo extends Component {
     }
 
   render() {
-      return (
-        <div className='thebig'>
-            <div className='instructions'>
-                <Collapse isOpen={this.state.collapse1} appear={false}>
-
-                    <ButtonToolbar id="bt">
-                      <Button color='primary' onClick={this.cameraTurnon}>
-                        <h2>
-                          Enable camera/mic.
-                        </h2>
-                      </Button>
-                    </ButtonToolbar>
-                </Collapse>
-
-                <Collapse isOpen={this.state.collapse2} appear={false}>
-
-                    <ButtonToolbar id="bt">
-                      <Button color='primary' onClick={this.slide_2_3}>
-                        <h2>
-                          Put your Alexa beside your Camera
-                        </h2>
-                      </Button>
-                    </ButtonToolbar>
-
-                </Collapse>
-
-                <Collapse isOpen={this.state.collapse3} appear={false}>
-
-                    <ButtonToolbar id="bt">
-                      <Button color='primary' onClick={this.startRecord}>
-                        <h2>
-                          Start Test Recording
-                        </h2>
-                      </Button>
-                    </ButtonToolbar>
-
-                </Collapse>
-
-                <Collapse isOpen={this.state.collapse4} appear={false}>
-
-                    <h2>
-                      Say: "Alexa What's the weather?" < br/>
-                      < br/>
-                      [you will be recorded for 20 seconds]
-                    </h2>
-
-                </Collapse>
-
-                <Collapse isOpen={this.state.collapse5} appear={false}>
-
-                    <h2>
-                      You should have a video file downloaded to your computer. Check the video to make sure everything is working.
-                      < br/>
-                      < br/>
-                      If everything is working.
-                    </h2>
-
-                    <ButtonToolbar id="bt">
-                      <a href="/Videos" className="btn btn-primary">
-                        <h2>
-                          Next Page
-                        </h2>
-                      </a>
-                    </ButtonToolbar>
-
-
-                    <h2>
-                      < br/>
-                      If it didn't work...
-                    </h2>
-
-                    <ButtonToolbar id="bt">
-                      <a onClick={()=> window.open("https://www.cleverfiles.com/help/mac-camera-not-working.html")} className="btn btn-primary">
-                        <h2>
-                          Help for Mac users
-                        </h2>
-                      </a>
-                    </ButtonToolbar>
-
-
-                    <ButtonToolbar id="bt">
-                      <a onClick={()=> window.open("https://support.microsoft.com/en-us/help/13753/windows-10-camera-does-not-work", "_blank")}  className="btn btn-primary">
-                        <h2>
-                          Help for Window Users
-                        </h2>
-                      </a>
-                    </ButtonToolbar>
-
-                    <h2>
-                      < br/>
-                      After making adjustments...
-                    </h2>
-
-                    <ButtonToolbar id="bt">
-                      <a href="/Videos_demo" className="btn btn-primary">
-                        <h2>
-                          Refresh this page
-                        </h2>
-                      </a>
-                    </ButtonToolbar>
-                </Collapse>
+    const num_parts = 5;
+    const parts = Array(5);
+    parts[0] = (
+      <Collapse isOpen={this.state.collapse1} appear={false}>
+            <ButtonToolbar id="bt">
+              <Button color='primary' onClick={this.cameraTurnon}>
+                <h2>
+                  Enable camera/mic.
+                </h2>
+              </Button>
+          </ButtonToolbar>
+        </Collapse>
+    );
+    parts[1] = (
+      <Collapse isOpen={this.state.collapse2} appear={false}>
+        <ButtonToolbar id="bt">
+          <Button color='primary' onClick={this.slide_2_3}>
+            <h2>
+              Put your Alexa beside your Camera
+            </h2>
+          </Button>
+        </ButtonToolbar>
+      </Collapse>
+    );
+    parts[2] = (
+      <Collapse isOpen={this.state.collapse3} appear={false}>
+        <ButtonToolbar id="bt">
+          <Button color='primary' onClick={this.startRecord}>
+            <h2>
+              Start Test Recording
+            </h2>
+          </Button>
+        </ButtonToolbar>
+      </Collapse>
+    );
+    parts[3] = (
+      <Collapse isOpen={this.state.collapse4} appear={false}>
+        <h2>
+          Say: "Alexa What's the weather?" < br/>
+          < br/>
+          [you will be recorded for 20 seconds]
+        </h2>
+      </Collapse>
+    );
+    parts[4] = (
+      <Collapse isOpen={this.state.collapse5} appear={false}>
+        <h2>
+          You should have a video file downloaded to your computer. Check the video to make sure everything is working.
+          < br/>
+          < br/>
+          If everything is working.
+          </h2>
+          <ButtonToolbar id="bt">
+            <a href="/Videos" className="btn btn-primary">
+              <h2>
+                Next Page
+              </h2>
+            </a>
+          </ButtonToolbar>
+          <h2>
+            < br/>
+            If it didn't work...
+          </h2>
+          <ButtonToolbar id="bt">
+            <a onClick={()=> window.open("https://www.cleverfiles.com/help/mac-camera-not-working.html")} className="btn btn-primary">
+              <h2>
+                Help for Mac users
+              </h2>
+            </a>
+          </ButtonToolbar>
+          <ButtonToolbar id="bt">
+            <a onClick={()=> window.open("https://support.microsoft.com/en-us/help/13753/windows-10-camera-does-not-work", "_blank")}  className="btn btn-primary">
+              <h2>
+                Help for Window Users
+              </h2>
+            </a>
+          </ButtonToolbar>
+          <h2>
+            < br/>
+            After making adjustments...
+          </h2>
+          <ButtonToolbar id="bt">
+            <a href="/Videos_demo" className="btn btn-primary">
+              <h2>Refresh this page</h2>
+            </a>
+          </ButtonToolbar>
+        </Collapse>
+    );
+    return (
+      <div className='thebig'>
+        <div className='instructions'>
+          {parts}        
           </div>
           <div className ="video_player">
               <video id="myVideo" ref={node => this.videoNode = node} className="video-js vjs-default-skin" playsInline></video>
