@@ -69,6 +69,7 @@ export default class Videos extends Component {
         collapse3: false,
         countdownStarted: false,
         progressPercent: 0,
+        recrdingStartTime: null,
       };
     }
     getUploadParams = (data) => {
@@ -77,7 +78,9 @@ export default class Videos extends Component {
         Bucket: 'lamwitty-lamwitty', 
         ContentType: 'video/webm',
         Key: 'public/study-videos/example1.webm', // the name it will be saved in the S3 bucket
-        // Metadata: '', // a map of metadata to attach to the object
+        Metadata: {
+          'startTime': String(this.state.recrdingStartTime),
+        }, // a map of metadata to attach to the object
       };
     };
     handleUpload = (err, data) => {
@@ -147,6 +150,7 @@ export default class Videos extends Component {
         // user clicked the record button and started recording
         this.player.on('startRecord', () => {
             console.log('started recording!');
+            this.setState({recrdingStartTime: Date.now()}); // save the recording start time for metadata
             this.startCountdown();
         });
         // user completed recording and stream is available
