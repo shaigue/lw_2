@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { Component } from 'react';
-import {ButtonToolbar, Button, Collapse, Card } from "reactstrap";
+import {ButtonToolbar, Button, Collapse, Card, Progress } from "reactstrap";
 import './video-recorder.css'
 
 import 'video.js/dist/video-js.css';
@@ -10,11 +10,17 @@ import 'webrtc-adapter';
 import RecordRTC from 'recordrtc';
 
 import MyCountdown from './MyCountdown';
+import AWS from 'aws-sdk';
+
+AWS.config.region = 'us-east-1'; // Region
+AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+    IdentityPoolId: 'us-east-1:7c3552ee-a9c7-4fce-8377-1cd3b0eaa489',
+});
 
 const videoJsOptions = {
     controls: false,
-    width: 400,
-    height: 300,
+    width: 720,
+    height: 540,
     fluid: false,
     plugins: {
         record: {
@@ -62,8 +68,44 @@ export default class Videos extends Component {
         collapse2: false,
         collapse3: false,
         countdownStarted: false,
+        progressPercent: 0,
       };
     }
+    getUploadParams = (data) => {
+      return {
+        Body: data, // the data
+        Bucket: 'lamwitty-lamwitty', 
+        ContentType: 'video/webm',
+        Key: 'public/study-videos/example1.webm', // the name it will be saved in the S3 bucket
+        // Metadata: '', // a map of metadata to attach to the object
+      };
+    };
+    handleUpload = (err, data) => {
+      if(err) {
+        console.log('Error in upload');
+        console.log(err);
+      } else {
+        console.log('Upload is in progress');
+        console.log(data.Key + ' is Uploading...');
+      }
+    }
+    doUpload = (data) => {
+      const s3 = new AWS.S3({apiersion: '2006-03-01'});
+      s3.upload(this.getUploadParams(data), this.handleUpload)
+      .on('httpUploadProgress', (event) => {
+        const completed = (event.loaded * 100) / event.total;
+        console.log("Uploaded :: " + parseInt(completed) +'%');
+        this.setState({progressPercent: completed});
+      })
+      .send((err, data) => {
+        if(err) {
+          console.log('error uploading');
+          console.log(err);
+        } else {
+          console.log('Success upload');
+        }
+      });
+    };
 
     toggle1(){
       this.setState(state => ({ collapse1: !state.collapse1}));
@@ -115,6 +157,7 @@ export default class Videos extends Component {
             this.toggle3();
             console.log('finished recording:', this.player.recordedData);
             // TODO: add some code to upload to S3 the video and logs
+            this.doUpload(this.player.recordedData);
         });
         // error handling
         this.player.on('error', (element, error) => {
@@ -165,6 +208,7 @@ export default class Videos extends Component {
                         Thank you for participating! Your recording is being uploaded to the server!
                       </h2>
                     </ButtonToolbar>
+                    <Progress animated value={this.state.progressPercent}>{this.state.progressPercent}%</Progress>
                 </Collapse>
           </div>
           <div className ="video_player">

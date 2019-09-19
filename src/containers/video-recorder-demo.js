@@ -120,7 +120,7 @@ export default class Videos_Demo extends Component {
             // recordedData is a blob object containing the recorded data that
             // can be downloaded by the user, stored on server etc.
             console.log('finished recording:', this.player.recordedData);
-            this.player.record().saveAs({'video': 'my-video-file-name.webm'});
+            this.player.record().saveAs({'video': 'my-video-file-name.mp4'});
             this.slide_4_5();
         });
         // error handling
@@ -145,6 +145,8 @@ export default class Videos_Demo extends Component {
     const parts = Array(5);
     // the part where the recording starts.
     // renders a timer to the end of the recording, and a button to start the test recording
+    // just trying to see what happenns when trying to record a long video
+    // const seconds = 300;
     const seconds = 5;
     const countdown1 = (
       <MyCountdown 

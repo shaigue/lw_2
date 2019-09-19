@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+import { Button, FormGroup, FormControl , FormLabel} from "react-bootstrap";
 import "./Login.css";
 
 export default class Login extends Component {
@@ -32,7 +32,7 @@ export default class Login extends Component {
       <div className="Login">
         <form onSubmit={this.handleSubmit}>
           <FormGroup controlId="MTurkID" bsSize="large">
-            <ControlLabel>MTurkID</ControlLabel>
+            <FormLabel>MTurkID</FormLabel>
             <FormControl
               autoFocus
               type="MTurkID"
@@ -41,7 +41,7 @@ export default class Login extends Component {
             />
           </FormGroup>
           <FormGroup controlId="password" bsSize="large">
-            <ControlLabel>Study password</ControlLabel>
+            <FormLabel>Study password</FormLabel>
             <FormControl
               value={this.state.password}
               onChange={this.handleChange}
