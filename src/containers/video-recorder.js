@@ -13,9 +13,7 @@ import MyCountdown from './MyCountdown';
 import AWS from 'aws-sdk';
 
 AWS.config.region = 'us-east-1'; // Region
-AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-    IdentityPoolId: 'us-east-1:7c3552ee-a9c7-4fce-8377-1cd3b0eaa489',
-});
+/* set up the aws credential for the website to use */
 
 const videoJsOptions = {
     controls: false,
